@@ -1,0 +1,210 @@
+<!-- ============================================
+     LearnHub - Landing Page (index.html)
+     ============================================
+     This is the main landing page for LearnHub, a student course management system.
+     It serves as the entry point for users and provides an overview of the platform's features.
+
+     Features:
+     - Hero section with branding and call-to-action
+     - Features showcase section
+     - Responsive design with Bootstrap
+     - Font Awesome icons integration
+     - JavaScript for smooth scrolling and navigation
+
+     Dependencies:
+     - Bootstrap 5.1.3 for responsive layout
+     - Font Awesome 6.0.0 for icons
+     - Custom CSS (index.css) for styling
+     - Custom JavaScript (scripts.js) for interactions
+     ============================================ -->
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Document metadata and character encoding -->
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LearnHub</title>
+
+    <!-- Favicon -->
+    <link
+      rel="icon"
+      href="{{ url_for('static', filename='images/LearnHub.png') }}"
+      type="image/png"
+    />
+
+    <!-- External CSS Dependencies -->
+    <!-- Font Awesome for icons used throughout the page -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+    <!-- Custom CSS for page-specific styling -->
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='index.css') }}"
+    />
+  </head>
+  <body>
+    <!-- ============================================
+         HERO SECTION
+         ============================================
+         Main banner section that introduces LearnHub to visitors.
+         Contains the logo, main heading, description, and primary CTA button.
+         ============================================ -->
+    <section class="hero">
+      <div class="hero-overlay">
+        <!-- Logo/Brand Image -->
+        <img
+          src="{{ url_for('static', filename='images/LearnHub.png') }}"
+          width="250"
+          height="250"
+          style="
+            margin-bottom: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+          "
+        />
+        <!-- Main heading and value proposition -->
+        <h1>Welcome to the LearnHub A Student Course Management System</h1>
+        <p>
+          Your comprehensive platform to manage student courses efficiently.
+        </p>
+        <!-- Primary call-to-action button -->
+        <a href="/dashboard" class="btn-primary">GET STARTED</a>
+      </div>
+    </section>
+
+    <!-- ============================================
+         FEATURES SECTION
+         ============================================
+         Showcase section highlighting key platform features.
+         Uses a grid layout to display feature cards with icons and descriptions.
+         ============================================ -->
+    <section class="features">
+      <!-- Section title -->
+      <h2 class="section-title">Features</h2>
+      <!-- Container for feature cards -->
+      <div class="features-container">
+        <!-- Feature Card 1: Student Management -->
+        <div class="feature-card">
+          <div class="feature-icon">
+            <i class="fas fa-pen"></i>
+          </div>
+          <h3>Student Management</h3>
+          <p>Easily manage and track student courses in real-time.</p>
+        </div>
+        <!-- Feature Card 2: Student Profiles -->
+        <div class="feature-card">
+          <div class="feature-icon">
+            <i class="fas fa-users"></i>
+          </div>
+          <h3>Student Profiles</h3>
+          <p>
+            Keep individual student profiles with detailed academic records.
+          </p>
+        </div>
+        <!-- Feature Card 3: Analytics & Reports -->
+        <div class="feature-card">
+          <div class="feature-icon">
+            <i class="fas fa-chart-line"></i>
+          </div>
+          <h3>Analytics & Reports</h3>
+          <p>Generate reports and track progress with visual analytics.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================
+         FOOTER SECTION
+         ============================================
+         Site footer containing copyright information, social media links,
+         and developer credits. Provides navigation and contact options.
+         ============================================ -->
+    <footer class="footer">
+      <div class="footer-content">
+        <!-- Copyright notice -->
+        <p>&copy; 2025 LearnHub| All Rights Reserved</p>
+        <!-- Social media navigation -->
+        <div class="social-icons">
+          <a href="#"><i class="fab fa-twitter"></i></a>
+          <a href="#"><i class="fab fa-linkedin"></i></a>
+          <a href="#"><i class="fab fa-instagram"></i></a>
+        </div>
+        <!-- Developer credit -->
+        <p>@Paul Mulilo And The LearnHub Team</p>
+      </div>
+    </footer>
+
+    <!-- ============================================
+         JAVASCRIPT SECTION
+         ============================================
+         Client-side JavaScript for enhanced user interactions.
+         Includes smooth scrolling, navigation enhancements, and basic functionality setup.
+         ============================================ -->
+    <script>
+      // Add any JavaScript functionality here if needed
+      document.addEventListener("DOMContentLoaded", function () {
+        // ============================================
+        // SMOOTH SCROLLING FOR NAVIGATION LINKS
+        // ============================================
+        // Enables smooth scrolling behavior for anchor links
+        // Prevents default jump behavior and animates scroll instead
+        document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+          anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            document.querySelector(this.getAttribute("href")).scrollIntoView({
+              behavior: "smooth",
+            });
+          });
+        });
+
+        // ============================================
+        // BACKEND CONNECTION SETUP
+        // ============================================
+        // Placeholder for backend system integration
+        // In production, this would include:
+        // - User authentication
+        // - API endpoint connections
+        // - Data fetching and state management
+        // Currently set up for basic functionality only
+
+        // ============================================
+        // GET STARTED BUTTON HANDLER
+        // ============================================
+        // Previously handled click events for login redirection
+        // Currently allows default anchor navigation to dashboard
+        // Can be re-enabled for custom login flow if needed
+        const getStartedBtn = document.querySelector(".btn-primary");
+        if (getStartedBtn) {
+          // Removed the click event handler to allow default anchor navigation
+          // getStartedBtn.addEventListener("click", function (e) {
+          //   // Redirect to the login page when "Get Started" is clicked
+          //   window.location.href = "login.html";
+          //   // ✅ REDIRECT TO DASHBOARD.HTML AFTER SUCCESSFUL LOGIN
+          //   window.location.href = "Dashboard.html";
+          // });
+        }
+      });
+    </script>
+  </body>
+</html>
+<!-- ============================================
+     VIEW STUDENT PAGE (view_student.html)
+     ============================================
+     This page displays detailed information about a specific student,
+     including their profile details and enrolled courses.
+
+     Features:
+     - Student profile display with personal details
+     - List of enrolled courses
+     - Responsive design with Bootstrap
+     - Font Awesome icons integration
+     - JavaScript for notifications
+
+     Dependencies:
+     - Bootstrap 5.1.3 for responsive layout
+     - Font Awesome 6.0.0 for icons
+     - Custom CSS (styles.css) for styling
+     - Custom JavaScript (scripts.js) for interactions
+     ============================================ -->

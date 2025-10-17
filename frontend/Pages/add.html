@@ -1,0 +1,339 @@
+<!-- ============================================
+     LearnHub - Add Student Page (add.html)
+     ============================================
+     This page provides a form for adding new students to the LearnHub system.
+     It includes comprehensive form validation and user feedback mechanisms.
+
+     Features:
+     - Bootstrap form layout with responsive design
+     - Real-time form validation
+     - Duplicate checking for student ID and email
+     - Flash message support for user feedback
+     - Font Awesome icons for visual elements
+     - JavaScript form validation and submission handling
+
+     Dependencies:
+     - Bootstrap 5.1.3 for form components and layout
+     - Font Awesome 6.0.0 for icons
+     - Custom CSS (styles.css) for styling
+     - Custom JavaScript (scripts.js) for validation
+
+     Form Fields:
+     - student_id: Unique identifier (required, integer)
+     - name: Full student name (required)
+     - age: Student age (required, 1-150)
+     - email: Email address (required, unique)
+     - courses: Optional course list (comma-separated)
+     ============================================ -->
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Document metadata and character encoding -->
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LearnHub - Add Student</title>
+
+    <!-- Favicon -->
+    <link
+      rel="icon"
+      href="{{ url_for('static', filename='images/LearnHub.png') }}"
+      type="image/png"
+    />
+    <!-- External CSS Dependencies -->
+    <!-- Font Awesome for form icons and visual elements -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+    <!-- Bootstrap for form layout and components -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <!-- Custom CSS for form-specific styling -->
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='styles.css') }}"
+    />
+  </head>
+  <body>
+    <!-- ============================================
+         NAVIGATION BAR
+         ============================================
+         Main navigation with LearnHub branding and menu items.
+         Add link is marked as active to show current page.
+         ============================================ -->
+    <nav class="navbar navbar-expand-lg navbar-light">
+      <div class="container">
+        <!-- Brand logo and home link -->
+        <a class="navbar-brand" href="/">
+          <i class="fas fa-graduation-cap me-2"></i> LearnHub
+        </a>
+        <!-- Mobile menu toggle -->
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <!-- Navigation menu -->
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ms-auto">
+            <!-- Home link -->
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="fas fa-home me-1"></i> Home
+              </a>
+            </li>
+            <!-- Dashboard link -->
+            <li class="nav-item">
+              <a class="nav-link" href="dashboard">
+                <i class="fas fa-tachometer-alt me-1"></i> Dashboard
+              </a>
+            </li>
+            <!-- Add Student link (active) -->
+            <li class="nav-item">
+              <a class="nav-link active" href="add">
+                <i class="fas fa-user-plus me-1"></i> Add
+              </a>
+            </li>
+            <!-- View Students link -->
+            <li class="nav-item">
+              <a class="nav-link" href="view">
+                <i class="fas fa-users me-1"></i> View
+              </a>
+            </li>
+            <!-- Search Students link -->
+            <li class="nav-item">
+              <a class="nav-link" href="search">
+                <i class="fas fa-search me-1"></i> Search
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <!-- ============================================
+         ADD STUDENT FORM SECTION
+         ============================================
+         Main form container for adding new students.
+         Includes form validation, flash messages, and submission handling.
+         ============================================ -->
+    <div class="container mt-4">
+      <!-- Page title -->
+      <h2 class="mb-4">Add New Student</h2>
+
+      <!-- Form container card -->
+      <div class="card">
+        <div class="card-body">
+          <!-- ============================================
+               FLASH MESSAGES SECTION
+               ============================================
+               Display system messages (success, error, warning) to user.
+               Messages are populated from Flask flash() system.
+               ============================================ -->
+          {% with messages = get_flashed_messages(with_categories=true) %} {% if
+          messages %}
+          <div id="flash-messages" style="display: none">
+            {% for category, message in messages %}
+            <div class="flash-message" data-category="{{ category }}">
+              {{ message }}
+            </div>
+            {% endfor %}
+          </div>
+          {% endif %} {% endwith %}
+
+          <!-- ============================================
+               STUDENT FORM
+               ============================================
+               Main form for student data entry.
+               Includes validation, duplicate checking, and submission handling.
+               ============================================ -->
+          <form
+            id="student-form"
+            method="POST"
+            action="/add"
+            onsubmit="return validateForm()"
+          >
+            <!-- Student ID and Name Row -->
+            <div class="row">
+              <!-- Student ID Field -->
+              <div class="col-md-6">
+                <div class="form-group mb-3">
+                  <label for="student_id"
+                    >Student ID <span class="required">*</span></label
+                  >
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="student_id"
+                    name="student_id"
+                    required
+                    oninput="validateStudentId()"
+                    onblur="checkDuplicateStudentId(this.value)"
+                    placeholder="Enter integer ID (e.g., 12345)"
+                  />
+                  <div id="student_id_feedback" class="invalid-feedback"></div>
+                </div>
+              </div>
+              <!-- Student Name Field -->
+              <div class="col-md-6">
+                <div class="form-group mb-3">
+                  <label for="name">Name <span class="required">*</span></label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="name"
+                    name="name"
+                    required
+                    oninput="validateName()"
+                    placeholder="Enter full name"
+                  />
+                  <div id="name_feedback" class="invalid-feedback"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Age and Email Row -->
+            <div class="row">
+              <!-- Age Field -->
+              <div class="col-md-6">
+                <div class="form-group mb-3">
+                  <label for="age">Age <span class="required">*</span></label>
+                  <input
+                    type="number"
+                    class="form-control"
+                    id="age"
+                    name="age"
+                    required
+                    min="1"
+                    max="150"
+                    oninput="validateAge()"
+                    placeholder="Enter age (1-150)"
+                  />
+                  <div id="age_feedback" class="invalid-feedback"></div>
+                </div>
+              </div>
+              <!-- Email Field -->
+              <div class="col-md-6">
+                <div class="form-group mb-3">
+                  <label for="email"
+                    >Email <span class="required">*</span></label
+                  >
+                  <input
+                    type="email"
+                    class="form-control"
+                    id="email"
+                    name="email"
+                    required
+                    oninput="validateEmail()"
+                    onblur="checkDuplicateEmail(this.value)"
+                    placeholder="Enter valid email address"
+                  />
+                  <div id="email_feedback" class="invalid-feedback"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Courses Field -->
+            <div class="form-group mb-3">
+              <label for="courses">Courses</label>
+              <input
+                type="text"
+                class="form-control"
+                placeholder="Enter courses separated by commas (e.g., Math, Physics, Chemistry)"
+                id="courses"
+                name="courses"
+                oninput="validateCourses()"
+              />
+              <div id="courses_feedback" class="invalid-feedback"></div>
+              <small class="form-text text-muted"
+                >Optional: Maximum 10 courses allowed</small
+              >
+            </div>
+
+            <!-- Form Action Buttons -->
+            <div class="d-flex justify-content-end">
+              <!-- Submit button -->
+              <button type="submit" class="btn btn-primary" id="submit-btn">
+                <i class="fas fa-plus me-1"></i>Add Student
+              </button>
+              <!-- Cancel button -->
+              <a href="/" class="btn btn-secondary ms-2">
+                <i class="fas fa-times me-1"></i>Cancel
+              </a>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================================
+         NOTIFICATION ELEMENT
+         ============================================
+         Toast notification system for real-time user feedback.
+         Used for validation messages and form submission status.
+         ============================================ -->
+    <div id="notification" class="notification" style="display: none">
+      <div class="d-flex align-items-center">
+        <i class="fas fa-check-circle"></i>
+        <span id="notification-message"></span>
+      </div>
+    </div>
+
+    <!-- ============================================
+         FOOTER SECTION
+         ============================================
+         Site footer with copyright, social links, and developer credits.
+         ============================================ -->
+    <footer class="footer">
+      <div class="footer-content">
+        <p>&copy; 2025 LearnHub| All Rights Reserved</p>
+        <div class="social-icons">
+          <a href="#"><i class="fab fa-twitter"></i></a>
+          <a href="#"><i class="fab fa-linkedin"></i></a>
+          <a href="#"><i class="fab fa-instagram"></i></a>
+        </div>
+        <p>@Paul Mulilo And The LearnHub Team</p>
+      </div>
+    </footer>
+
+    <!-- ============================================
+         SCRIPTS SECTION
+         ============================================
+         JavaScript libraries and form-specific functionality.
+         ============================================ -->
+    <!-- Bootstrap JavaScript for form components -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JavaScript for form validation and handling -->
+    <script src="{{ url_for('static', filename='scripts.js') }}"></script>
+    <script>
+      // ============================================
+      // FORM JAVASCRIPT INITIALIZATION
+      // ============================================
+      document.addEventListener("DOMContentLoaded", function () {
+        // ============================================
+        // FLASH MESSAGE HANDLING
+        // ============================================
+        // Convert Flask flash messages to toast notifications
+        // Display success/error messages to user
+        const flashMessages = document.querySelectorAll(
+          "#flash-messages .flash-message"
+        );
+        flashMessages.forEach((msg) => {
+          const category = msg.getAttribute("data-category");
+          const message = msg.textContent;
+          if (category === "success") {
+            showNotification(message, "success");
+          } else {
+            showNotification(message, "error");
+          }
+        });
+      });
+    </script>
+  </body>
+</html>
